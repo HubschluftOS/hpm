@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	config "hpm/settings"
 	"log"
 	"strings"
 
 	"github.com/gocolly/colly"
-	config "github.com/rendick/pem/settings"
 )
 
 func StandardizeSpaces(s string) string {

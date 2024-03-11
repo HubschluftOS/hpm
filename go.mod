@@ -1,4 +1,4 @@
-module github.com/rendick/pem
+module hpm
 
 go 1.21.6
 

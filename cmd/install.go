@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	config "hpm/settings"
 	"io"
 	"net/http"
 	"os"
 	"os/exec"
-
-	config "github.com/rendick/pem/settings"
+	"strings"
 )
 
 var URL string
@@ -44,5 +44,5 @@ func InstallPackage(packageName string) {
 		return
 	}
 
-	fmt.Println(string(output))
+	fmt.Println(strings.TrimSpace(string(output)))
 }

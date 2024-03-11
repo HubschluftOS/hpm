@@ -1,10 +1,9 @@
 package main
 
 import (
+	"hpm/cmd"
 	"log"
 	"runtime"
-
-	"github.com/rendick/pem/cmd"
 )
 
 func main() {

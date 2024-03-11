@@ -1,20 +1,18 @@
-# Package Execution Manager
+# HübschluftOS Package Manager
 
 A simple, lightweight and user-friendly but functional and powerful package manager for HübschluftOS.
 
 # Installation
 
 ```sh
-git clone https://gitlab.com/hubschluftos/package-manager/pem.git
-cd pem
-sh build
-sudo mv pem /bin
-pem --help 
+git clone https://github.com/HubschluftOS/hpm
+cd hpm
+make
 ```
 
 # Usage
 
-If you want to know how to use the command, you can try `pem --help` for more information.
+If you want to know how to use the command, you can try `hpm help` for more information.
 
 # License
 
