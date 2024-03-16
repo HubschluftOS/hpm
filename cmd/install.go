@@ -13,7 +13,6 @@ import (
 var URL string
 
 func InstallPackage(packageName string) {
-
 	URL = fmt.Sprintf(config.PackageLink, os.Args[2])
 	fmt.Println(URL)
 	response, err := http.Get(URL)
@@ -36,13 +35,12 @@ func InstallPackage(packageName string) {
 		return
 	}
 
-	command := exec.Command("bash", tempFile.Name())
+	command, err := exec.Command("bash", tempFile.Name()).CombinedOutput()
 
-	output, err := command.CombinedOutput()
 	if err != nil {
 		fmt.Println("Error executing the command:", err)
 		return
 	}
 
-	fmt.Println(strings.TrimSpace(string(output)))
+	fmt.Println(strings.TrimSpace(string(command)))
 }

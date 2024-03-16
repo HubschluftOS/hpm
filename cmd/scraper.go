@@ -21,8 +21,8 @@ func Scrapper() {
 	})
 
 	c.OnRequest(func(r *colly.Request) {
-		log.Printf(config.Red+config.Bold+config.Reset+"All packages are available on: "+config.Bold+"%s\n"+config.Reset, r.URL)
+		log.Printf(config.Bold+"%s\n"+config.Reset, r.URL)
 	})
 
-	c.Visit(config.PackagesURL)
+	fmt.Printf("%s\n\n", c.Visit(config.PackagesURL))
 }

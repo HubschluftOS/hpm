@@ -16,28 +16,21 @@ var (
 )
 
 const (
-	// Version
-	Version = "1.1v hpm"
-	// Path
+	Version     = "1.1v hpm"
 	PackageLink = "https://hubschluftos.github.io/db/packages/%s.html"
 	PackagesURL = "https://hubschluftos.github.io/pages/packages.html"
 	PackageDir  = "/bin/"
-	// Msg
-	ErrorMsg   = "%s not successfully uninstalled! Could not find file or use"
-	SuccessMsg = "%s successfully uninstalled!\n"
+	ErrorMsg    = "%s not successfully uninstalled! Could not find file or use"
+	SuccessMsg  = "%s successfully uninstalled!\n"
 )
 
 func Help() {
-	fmt.Println(Bold + "Usage: pem [OPTION] [FILE]" + Reset +
-		"\n\ninstall: installation of the entered package" +
-		"\nremove: uninstalling of the entered package" +
-		"\nlist: printing of all available packages" +
-		"\nstats: print all information about the package manager" +
-		"\n\nhelp: print the help menu" +
-		"\nversion: print the version" +
-		"\n\npem: <https://github.com/rendick/pem/>")
-}
-
-func Missing() {
-	fmt.Println("hpm: missing arguments\nUsage: hpm [OPTION] [FILE]\nTry help for more information")
+	fmt.Println(Bold + "Usage: hpm [OPTION] [FILE]" + Reset +
+		"\n\nsync:	\tinstallation of the entered package" +
+		"\nremove: \tuninstalling of the entered package" +
+		"\nlist:   \tprinting of all available packages" +
+		"\ninfo:   \tprint all information about the package manager" +
+		"\n\nhelp:    \tprint the help menu" +
+		"\nversion:\tprint the version" +
+		"\n\nhpm:    \t<https://github.com/HubschluftOS/hpm>")
 }

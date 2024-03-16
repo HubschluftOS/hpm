@@ -9,14 +9,14 @@ import (
 var Log string
 
 var (
-	InstallLog = "\n%s: missing package\nUsage: hpm install [PACKAGE]\nTry help for more information\n"
+	InstallLog = "\n%s: missing package\nUsage: hpm sync [PACKAGE]\nTry help for more information\n"
 	RemoveLog  = "\n%s: missing package\nUsage: hpm remove [PACKAGE]\nTry help for more information\n"
 )
 
 func Switch() {
 	if len(os.Args) == 2 {
 		switch os.Args[1] {
-		case "install":
+		case "sync":
 			Log = fmt.Sprintf(config.Red+"(%s)"+config.Reset+InstallLog, config.Time, os.Args[1])
 			fmt.Println(Log)
 			Logs()
@@ -24,6 +24,7 @@ func Switch() {
 
 		case "list":
 			Scrapper()
+			os.Exit(0)
 
 		case "update":
 			fmt.Println("Soon.")
@@ -34,20 +35,21 @@ func Switch() {
 			fmt.Println(Log)
 			Logs()
 			os.Exit(0)
-		case "stats":
+
+		case "info":
 			PackageStats()
 
 		case "help":
 			config.Help()
 			os.Exit(0)
+
 		case "version":
 			fmt.Println(config.Version)
 			os.Exit(0)
-
 		}
 	} else if len(os.Args) == 3 {
 		switch os.Args[1] {
-		case "install":
+		case "sync":
 			InstallPackage(os.Args[2])
 			Log = fmt.Sprintf(config.Red+"\n%s: "+config.Reset+"%s\n", config.Time, os.Args[2])
 			fmt.Println(Log)
@@ -56,13 +58,9 @@ func Switch() {
 
 		case "remove":
 			UninstallPackage(os.Args[2])
-			// Log = fmt.Sprintf(config.Red+"\n%s: "+config.Reset+"%s\n", config.Time, os.Args[2])
-			// fmt.Println(Log)
-			// Logs()
 			os.Exit(0)
-
 		}
 	} else {
-		config.Missing()
+		fmt.Println("hpm: missing arguments\nUsage: hpm [OPTION] [FILE]\nTry help for more information")
 	}
 }
