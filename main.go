@@ -1,15 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"hpm/cmd"
-	"log"
 	"runtime"
 )
 
 func main() {
-	if runtime.GOOS == "linux" {
-		cmd.Switch()
+	os_slice := []string{"linux", "openbsd", "netbsd", "freebsd", "dragonfly"}
+	slice_types := false
+	for _, str := range os_slice {
+		if str == runtime.GOOS {
+			slice_types = true
+			break
+		}
+	}
+
+	if slice_types == true {
+		cmd.Args()
 	} else {
-		log.Fatal("You are not running Linux!")
+		fmt.Printf("You are not running UNIX-like system right now: %s\n", runtime.GOOS)
+		return
 	}
 }
