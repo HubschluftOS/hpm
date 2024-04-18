@@ -28,14 +28,14 @@ func PkgInformation(pkg string) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", pkgULR, nil)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("[0/1] error while connecting to a given URL: %s\n", err)
 		return
 	}
 
 	fmt.Printf("[1/1] creating a URL request\n")
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("[0/1] error while creating a URL request: %s\n", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -44,13 +44,13 @@ func PkgInformation(pkg string) {
 	fmt.Printf("[1/1] reading the package information\n")
 	pkgData, err = io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("[0/1] error while reading the package information: %s\n", err)
 		return
 	}
 
 	err = json.Unmarshal(pkgData, &packageData)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("[0/1] error while unmarshaling a JSON file: %s\n", err)
 		return
 	}
 
@@ -100,7 +100,7 @@ func Sync(pkg string, version string, maintainer string, dependencies []interfac
 		fmt.Printf("[1/1] getting the URL\n")
 		resp, err := http.Get(source)
 		if err != nil {
-			fmt.Printf("[0/1] failed to get URL %s\n", err)
+			fmt.Printf("[0/1] failed to get URL: %s\n", err)
 			return
 		}
 		defer resp.Body.Close()
@@ -108,7 +108,7 @@ func Sync(pkg string, version string, maintainer string, dependencies []interfac
 		fmt.Printf("[1/1] creating a file\n")
 		out, err := os.Create(URLFileName)
 		if err != nil {
-			fmt.Printf("[0/1] failed to create file %s\n", err)
+			fmt.Printf("[0/1] failed to create file: %s\n", err)
 			return
 		}
 		defer out.Close()
@@ -116,9 +116,18 @@ func Sync(pkg string, version string, maintainer string, dependencies []interfac
 		fmt.Printf("[1/1] copying a file\n")
 		_, err = io.Copy(out, resp.Body)
 		if err != nil {
-			fmt.Printf("failed to copy file %s\n", err)
+			fmt.Printf("[0/1] failed to copy file: %s\n", err)
 			return
 		}
+
+		// ERROR (!)
+		r, err := os.Open("./neofetch-7.1.0.tar.gz")
+		if err != nil {
+			log.Fatalf("Failed to open file: %s", err)
+		}
+		ExtractTarGz(r)
+
+		defer r.Close()
 
 		fmt.Printf("[1/1] %s successfully installed\n", pkg)
 	} else {
