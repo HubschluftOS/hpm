@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -75,6 +74,7 @@ func PkgInformation(pkg string) {
 	if !ok {
 		fmt.Printf("Error while parsing JSON file (source)\n")
 	}
+	fmt.Println(source)
 
 	Sync(pkg, version, maintainer, dependencies, source)
 }
@@ -120,14 +120,12 @@ func Sync(pkg string, version string, maintainer string, dependencies []interfac
 			return
 		}
 
-		// ERROR (!)
-		r, err := os.Open("./neofetch-7.1.0.tar.gz")
-		if err != nil {
-			log.Fatalf("Failed to open file: %s", err)
-		}
-		ExtractTarGz(r)
+		fmt.Println(URLFileName)
 
-		defer r.Close()
+		if err := UntarGzFile(URLFileName); err != nil {
+			fmt.Printf("[0/1] Failed to extract file: %s\n", err)
+			return
+		}
 
 		fmt.Printf("[1/1] %s successfully installed\n", pkg)
 	} else {
