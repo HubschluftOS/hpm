@@ -7,29 +7,29 @@ import (
 
 func Args() {
 	var flagInput string
+	var desyncFlag string
+	var newsFlag bool
 	flag.StringVar(&flagInput, "sync", "", "sync the package with your system")
+	flag.StringVar(&desyncFlag, "desync", "", "desync the package with ")
+	flag.BoolVar(&newsFlag, "news", false, "display operating system news")
 	flag.Parse()
 
-	if flagInput == "" {
-		nonFlagArgument := flag.Args()
-		if len(nonFlagArgument) > 0 {
-			firstFlag := nonFlagArgument[0]
-			fmt.Printf("Invalid flag '%s'\n", firstFlag)
-		}
+	if flagInput != "" {
+		GetPackageInformation(flagInput)
+	}
+
+	if desyncFlag != "" {
+		Desync()
+	}
+
+	if newsFlag {
+		News()
 		return
 	}
 
-	if flagInput != "" {
-		PkgInformation(flagInput)
+	nonFlagsArgs := flag.Args()
+	if len(nonFlagsArgs) == 0 {
+		fmt.Printf("hpm: not enough arguments\nTry 'hpm --help' for more information.\n")
+		return
 	}
-
-	// Multi-packages
-	// nonFlagsArgs := flag.Args()
-	// if len(nonFlagsArgs) == 0 {
-	// 	return
-	// } else {
-	// 	for _, arg := range nonFlagsArgs {
-	// 		fmt.Println(strings.ReplaceAll(arg, "\n", " "))
-	// 	}
-	// }
 }

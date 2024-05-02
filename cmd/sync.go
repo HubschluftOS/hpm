@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,7 +9,7 @@ import (
 )
 
 const ContinueMSG = `
-Package name: %s
+Packages:	  %s
 Version:      %s
 Maintainer:   %s
 Dependencies: %s
@@ -19,69 +18,7 @@ Continue? [Y/n] `
 
 var Input string
 
-func PkgInformation(pkg string) {
-	var packageData map[string]interface{}
-	pkgULR := "https://hubschluftos.github.io/db/packages/" + strings.TrimSpace(pkg) + ".json"
-
-	fmt.Printf("[1/1] connecting to a given URL\n")
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", pkgULR, nil)
-	if err != nil {
-		fmt.Printf("[0/1] error while connecting to a given URL: %s\n", err)
-		return
-	}
-
-	fmt.Printf("[1/1] creating a URL request\n")
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Printf("[0/1] error while creating a URL request: %s\n", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	var pkgData []byte
-	fmt.Printf("[1/1] reading the package information\n")
-	pkgData, err = io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Printf("[0/1] error while reading the package information: %s\n", err)
-		return
-	}
-
-	err = json.Unmarshal(pkgData, &packageData)
-	if err != nil {
-		fmt.Printf("[0/1] error while unmarshaling a JSON file: %s\n", err)
-		return
-	}
-
-	version, ok := packageData["version"].(string)
-	if !ok {
-		fmt.Printf("Error while parsing JSON file (version)\n")
-		return
-	}
-
-	maintainer, ok := packageData["maintainer"].(string)
-	if !ok {
-		fmt.Printf("Error while parsing JSON file (maintainer)\n")
-	}
-
-	dependencies, ok := packageData["dependencies"].([]interface{})
-	if !ok {
-		fmt.Printf("Error while parsing JSON file (dependencies)\n")
-		return
-	}
-
-	source, ok := packageData["source"].(string)
-	if !ok {
-		fmt.Printf("Error while parsing JSON file (source)\n")
-	}
-	fmt.Println(source)
-
-	Sync(pkg, version, maintainer, dependencies, source)
-}
-
 func Sync(pkg string, version string, maintainer string, dependencies []interface{}, source string) {
-	fmt.Println("Sync function called with:", pkg)
-
 	URLFileName := pkg + "-" + version + ".tar.gz"
 	fmt.Printf(ContinueMSG, pkg, version, maintainer, dependencies)
 	fmt.Scan(&Input)
