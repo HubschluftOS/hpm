@@ -28,6 +28,7 @@ func GetPackageInformation(pkg string) {
 
 	version, _ := packageData["version"].(string)
 	maintainer, _ := packageData["maintainer"].(string)
+	path, _ := packageData["path"].(string)
 
 	var dependencies []string
 	if dep, ok := packageData["dependencies"].([]interface{}); ok {
@@ -50,5 +51,5 @@ func GetPackageInformation(pkg string) {
 		interfaceDeps = append(interfaceDeps, dep)
 	}
 
-	Sync(pkg, version, maintainer, interfaceDeps, source)
+	Sync(pkg, version, maintainer, interfaceDeps, source, path)
 }

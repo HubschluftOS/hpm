@@ -16,10 +16,12 @@ func Args() {
 
 	if flagInput != "" {
 		GetPackageInformation(flagInput)
+		return
 	}
 
 	if desyncFlag != "" {
 		Desync()
+		return
 	}
 
 	if newsFlag {

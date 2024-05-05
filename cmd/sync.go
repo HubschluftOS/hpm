@@ -9,7 +9,7 @@ import (
 )
 
 const ContinueMSG = `
-Packages:	  %s
+Packages:     %s
 Version:      %s
 Maintainer:   %s
 Dependencies: %s
@@ -18,7 +18,7 @@ Continue? [Y/n] `
 
 var Input string
 
-func Sync(pkg string, version string, maintainer string, dependencies []interface{}, source string) {
+func Sync(pkg string, version string, maintainer string, dependencies []interface{}, source string, path string) {
 	URLFileName := pkg + "-" + version + ".tar.gz"
 	fmt.Printf(ContinueMSG, pkg, version, maintainer, dependencies)
 	fmt.Scan(&Input)
@@ -57,14 +57,30 @@ func Sync(pkg string, version string, maintainer string, dependencies []interfac
 			return
 		}
 
-		fmt.Println(URLFileName)
-
 		if err := UntarGzFile(URLFileName); err != nil {
 			fmt.Printf("[0/1] Failed to extract file: %s\n", err)
 			return
 		}
 
+		fmt.Printf("[1/1] deleting a %s\n", URLFileName)
+		if removeTar := os.Remove(URLFileName); removeTar != nil {
+			fmt.Printf("[0/1] Failed to delete %s\n", URLFileName)
+			return
+		}
+
+		sourcePath := path + pkg
+		if err := os.Rename("/home/rendick/programming/hpm/neofetch-7.1.0/neofetch", sourcePath); err != nil {
+			fmt.Print(err)
+			return
+		}
+
+		if err := os.Chmod(sourcePath, 0755); err != nil {
+			fmt.Println(err)
+			return
+		}
+
 		fmt.Printf("[1/1] %s successfully installed\n", pkg)
+		return
 	} else {
 		fmt.Printf("[1/1] exiting \n")
 		return
