@@ -9,9 +9,13 @@ func Args() {
 	var flagInput string
 	var desyncFlag string
 	var newsFlag bool
+	var configFlag bool
+	var testFlag bool
 	flag.StringVar(&flagInput, "sync", "", "sync the package with your system")
 	flag.StringVar(&desyncFlag, "desync", "", "desync the package with ")
 	flag.BoolVar(&newsFlag, "news", false, "display operating system news")
+	flag.BoolVar(&configFlag, "config", false, "configurate package manager")
+	flag.BoolVar(&testFlag, "test", false, "test")
 	flag.Parse()
 
 	if flagInput != "" {
@@ -20,12 +24,22 @@ func Args() {
 	}
 
 	if desyncFlag != "" {
-		Desync()
+		Desync(desyncFlag)
 		return
 	}
 
 	if newsFlag {
 		News()
+		return
+	}
+
+	if configFlag {
+		ConfigurateManager()
+		return
+	}
+
+	if testFlag {
+		Test()
 		return
 	}
 

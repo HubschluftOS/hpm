@@ -1,7 +1,13 @@
 package cmd
 
-import "fmt"
+import (
+	"log"
+	"os"
+)
 
-func Desync() {
-	fmt.Printf("package: \n")
+func Desync(pkg string) {
+	ConfigurateManager()
+	if err := os.Remove("/usr/bin/" + pkg); err != nil {
+		log.Fatal(err)
+	}
 }

@@ -9,18 +9,20 @@ import (
 )
 
 const ContinueMSG = `
-Packages:     %s
-Version:      %s
-Maintainer:   %s
-Dependencies: %s
+Packages:		%s
+Version:		%s
+Maintainer:		%s
+Dependencies:		%s
+Source:			%s
 
 Continue? [Y/n] `
 
 var Input string
 
 func Sync(pkg string, version string, maintainer string, dependencies []interface{}, source string, path string) {
+	ConfigurateManager()
 	URLFileName := pkg + "-" + version + ".tar.gz"
-	fmt.Printf(ContinueMSG, pkg, version, maintainer, dependencies)
+	fmt.Printf(ContinueMSG, pkg, version, maintainer, dependencies, source)
 	fmt.Scan(&Input)
 	Input = strings.TrimSpace(strings.ToLower(Input))
 
