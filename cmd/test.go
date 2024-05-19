@@ -1,27 +1,36 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
-	"io"
-	"log"
-	"net/http"
+	"os"
 	"strings"
 )
 
 func Test() {
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://hubschluftos.github.io/db/packages/neofetch.json", nil)
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Println("Press Enter to continue, or type 'y' or 'n' and press Enter:")
+
+	input, err := reader.ReadString('\n')
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error reading input:", err)
+		return
 	}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal(err)
+
+	// Trim the input to remove leading and trailing whitespace (including the newline)
+	input = strings.TrimSpace(input)
+
+	if input == "" {
+		fmt.Println("You pressed Enter. Continuing program...")
+		// Add logic for Enter key action
+	} else if input == "y" {
+		fmt.Println("You entered 'y'. Proceeding with Yes.")
+		// Add logic for 'y' action
+	} else if input == "n" {
+		fmt.Println("You entered 'n'. Proceeding with No.")
+		// Add logic for 'n' action
+	} else {
+		fmt.Println("Invalid input. Please enter 'y', 'n', or press Enter.")
 	}
-	defer resp.Body.Close()
-	bodyText, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("%s\n", strings.TrimSpace(string(bodyText)))
 }

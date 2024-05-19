@@ -5,13 +5,16 @@ import (
 	"fmt"
 )
 
+var (
+	flagInput  string
+	desyncFlag string
+	updateFlag string
+	newsFlag   bool
+	configFlag bool
+	testFlag   bool
+)
+
 func Args() {
-	var flagInput string
-	var desyncFlag string
-	var updateFlag string
-	var newsFlag bool
-	var configFlag bool
-	var testFlag bool
 	flag.StringVar(&flagInput, "sync", "", "sync the package with your system")
 	flag.StringVar(&desyncFlag, "desync", "", "desync the package with ")
 	flag.StringVar(&updateFlag, "update", "", "update the package or system")

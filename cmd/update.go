@@ -6,12 +6,13 @@ import (
 )
 
 func UpdateSystem() {
-	fmt.Println("world")
+	fmt.Println("soon")
 }
 
 func UpdatePackage(pkg string) {
 	jsonPath := "/home/rendick/.config/hpm/" + pkg + ".json"
 	fmt.Println(jsonPath)
+
 	if _, err := os.Stat(jsonPath); err != nil {
 		if os.IsNotExist(err) {
 			fmt.Printf("[1/1] %s directory does not exist\n", jsonPath)
@@ -21,6 +22,7 @@ func UpdatePackage(pkg string) {
 			return
 		}
 	}
+
 	fmt.Printf("[1/1] %s directory exists\n", jsonPath)
 	return
 }
