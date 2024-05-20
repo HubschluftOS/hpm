@@ -12,7 +12,7 @@ import (
 
 func GetPackageInformation(pkg string) {
 	var packageData map[string]interface{}
-	pkgURL := "https://hubschluftos.github.io/db/packages/" + strings.TrimSpace(pkg) + ".json"
+	pkgURL := "https://hubschluft.github.io/db/" + strings.TrimSpace(pkg) + ".json"
 
 	fmt.Printf("[1/1] connecting to a given URL\n")
 	client := &http.Client{}
@@ -44,36 +44,31 @@ func GetPackageInformation(pkg string) {
 
 	version, ok := packageData["version"].(string)
 	if !ok {
-		fmt.Printf("Error while parsing JSON file (version)\n")
+		fmt.Printf("[0/1] error while parsing JSON file (version)\n")
 		return
 	}
 
 	maintainer, ok := packageData["maintainer"].(string)
 	if !ok {
-		fmt.Printf("Error while parsing JSON file (maintainer)\n")
+		fmt.Printf("[0/1] error while parsing JSON file (maintainer)\n")
 	}
 
 	dependencies, ok := packageData["dependencies"].([]interface{})
 	if !ok {
-		fmt.Printf("Error while parsing JSON file (dependencies)\n")
+		fmt.Printf("[0/1] Error while parsing JSON file (dependencies)\n")
 		return
 	}
 
 	source, ok := packageData["source"].(string)
 	if !ok {
-		fmt.Printf("Error while parsing JSON file (source)\n")
+		fmt.Printf("[0/1] error while parsing JSON file (source)\n")
 	}
 
 	path, ok := packageData["path"].(string)
 	if !ok {
-		fmt.Printf("Error while parsing JSON file (source)\n")
+		fmt.Printf("[0/1] error while parsing JSON file (source)\n")
 	}
 	fmt.Println(source)
-
-	// currentUser, err := user.Current()
-	// if err != nil {
-	// 	fmt.Printf("[0/1] %s\n", err)
-	// }
 
 	configPath := "/home/rendick" + "/.config/hpm/" + pkg + ".json"
 	fmt.Println(configPath)
@@ -83,9 +78,11 @@ func GetPackageInformation(pkg string) {
 		log.Fatal(err)
 	}
 	fmt.Println(packageJsonInformation)
+
 	if err := os.WriteFile(configPath, []byte(bodyText), 0755); err != nil {
 		fmt.Println(err)
 	}
 
 	Sync(pkg, version, maintainer, dependencies, source, path)
+	return
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 const ContinueMSG = `
@@ -17,11 +18,16 @@ Source:			%s
 
 Continue? [Y/n] `
 
-var Input string
+var (
+	Input        string
+	PackageInput string
+)
 
 func Sync(pkg string, version string, maintainer string, dependencies []interface{}, source string, path string) {
 	ConfigurateManager()
-	URLFileName := pkg + "-" + version + ".tar.gz"
+	PackageInput = fmt.Sprintf("%s: %s\n", time.Now().Format("2006-01-02 15:04:05"), pkg)
+	Logs()
+	URLFileName := "/tmp/" + pkg + "-" + version + ".tar.gz"
 	fmt.Printf(ContinueMSG, pkg, version, maintainer, dependencies, source)
 	fmt.Scan(&Input)
 	Input = strings.TrimSpace(strings.ToLower(Input))
@@ -43,6 +49,10 @@ func Sync(pkg string, version string, maintainer string, dependencies []interfac
 			return
 		}
 		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			fmt.Printf("[0/1] failed to download file: %s\n", resp.Status)
+		}
 
 		fmt.Printf("[1/1] creating a file\n")
 		out, err := os.Create(URLFileName)

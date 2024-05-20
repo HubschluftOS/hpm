@@ -4,107 +4,101 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/user"
 	"strings"
 )
 
-var configJsonFileExample = `{
-    "username": "mynickname",
-    "installation_path": "7.1.0",
+// config file example
+const configJsonFileExample = `{
+    "root_user": "mynickname",
+    "installation_path": "/usr/bin/"
 }
 `
 
-var (
+// config path
+const configPath = "/etc/hpm/"
+
+// colors
+const (
 	reset = "\033[0m"
 	bold  = "\033[1m"
 	red   = "\033[31m"
 )
 
 func ConfigurateManager() {
-	currentUser, err := user.Current()
-	if err != nil {
-		fmt.Printf("[0/1] %s\n", err)
-	}
+	configPath := "/etc/hpm/"
+	fmt.Printf("[1/1] Checking the configuration directory\n")
 
-	configPath := currentUser.HomeDir + "/.config/hpm/"
-	fmt.Printf("[1/1] checking the configuration directory\n")
-	if _, err := os.Stat(configPath); err != nil {
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		fmt.Printf("[1/1] %s directory does not exist\n", configPath)
 		createDir()
 		createFile()
 		return
-	} else {
-		reader := bufio.NewReader(os.Stdin)
-
-		fmt.Printf(red + bold + "[!/!] THIS COMMAND WILL SET THE ~/.config/hpm/ DIRECTORY TO THE DEFAULT!!!\n" + reset)
-		fmt.Print("[?/?] you would like to reload you configuration file? [y/n] ")
-
-		input, err := reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading input:", err)
-			return
-		}
-
-		input = strings.TrimSpace(input)
-
-		if input == "" || input == "y" || input == "yes" {
-			currentUser, err := user.Current()
-			if err != nil {
-				fmt.Printf("[0/1] %s\n", err)
-			}
-
-			configPath := currentUser.HomeDir + "/.config/hpm/"
-			if err := os.RemoveAll(configPath); err != nil {
-				fmt.Println("err")
-				return
-			}
-			createDir()
-			createFile()
-		} else {
-			fmt.Println("EXITING")
-			return
-		}
 	}
+
+	fmt.Printf("[1/1] Everything is okay\n")
+	return
 }
 
 func createDir() {
-	currentUser, err := user.Current()
-	if err != nil {
-		fmt.Printf("[0/1] %s\n", err)
-	}
+	fmt.Printf("[1/1] Directory does not exist, creating...\n")
 
-	configPath := currentUser.HomeDir + "/.config/hpm/"
-
-	fmt.Printf("[1/1] directory does not exist, creating...\n")
 	if err := os.Mkdir(configPath, 0755); err != nil {
 		fmt.Printf("[0/1] %s\n", err)
 		return
 	}
-	fmt.Printf("[1/1] directory successfully created\n")
+
+	fmt.Printf("[1/1] Directory successfully created\n")
+	return
 }
 
 func createFile() {
-	currentUser, err := user.Current()
-	if err != nil {
-		fmt.Printf("[0/1] %s\n", err)
-	}
-
-	configPath := currentUser.HomeDir + "/.config/hpm/"
-
-	fmt.Printf("[1/1] configuration file does not exist, creating...\n")
+	fmt.Printf("[1/1] Configuration file does not exist, creating...\n")
 	createConfigFile, err := os.Create(configPath + "config.json")
 	if err != nil {
 		fmt.Printf("[0/1] %s\n", err)
 		return
 	}
 	defer createConfigFile.Close()
-	fmt.Printf("[1/1] configuration file successfully created\n")
 
-	writingJsonData, err := createConfigFile.WriteString(configJsonFileExample)
+	_, err = createConfigFile.WriteString(configJsonFileExample)
 	if err != nil {
-		fmt.Printf("[0/1] error writing data to the filo")
+		fmt.Printf("[0/1] Error writing data to the file\n")
+		return
 	}
-	fmt.Println(writingJsonData)
 
-	fmt.Printf("[1/1] config directory successfully configured\n")
+	fmt.Printf("[1/1] Configuration file successfully created\n")
+	fmt.Printf("[1/1] Config directory successfully configured\n")
+	return
+}
+
+func reloadConfig() {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Printf(red + bold + "[!/!] THIS COMMAND WILL SET THE ~/.config/hpm/ DIRECTORY TO THE DEFAULT!!!\n" + reset)
+	fmt.Print("[?/?] Would you like to reload your configuration file? [y/n] ")
+
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	input = strings.TrimSpace(input)
+
+	if input == "" || input == "y" || input == "yes" {
+		if err := os.RemoveAll(configPath); err != nil {
+			fmt.Println("Error removing config directory:", err)
+			return
+		}
+		createDir()
+		createFile()
+		return
+	} else {
+		fmt.Printf("[0/1] exiting\n")
+		return
+	}
+}
+
+func removeConfig() {
+	fmt.Println("hello world")
 }
