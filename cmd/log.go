@@ -5,9 +5,12 @@ import (
 	"os"
 )
 
+const (
+	dirPath  = "/tmp/hpm"
+	filePath = dirPath + "/hpm.log"
+)
+
 func Logs() {
-	dirPath := "/tmp/hpm"
-	filePath := dirPath + "/hpm.log"
 
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
 		if err := os.Mkdir(dirPath, 0755); err != nil {
@@ -28,5 +31,4 @@ func Logs() {
 		fmt.Println(err)
 		return
 	}
-
 }

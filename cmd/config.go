@@ -32,7 +32,6 @@ func ConfigurateManager() {
 		fmt.Printf("[1/1] %s directory does not exist\n", configPath)
 		createDir()
 		createFile()
-		return
 	}
 
 	fmt.Printf("[1/1] Everything is okay\n")
@@ -100,5 +99,27 @@ func reloadConfig() {
 }
 
 func removeConfig() {
-	fmt.Println("hello world")
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Printf(red + bold + "[!/!] THIS COMMAND WILL DELETE THE ~/.config/hpm/ DIRECTORY!!!\n" + reset)
+	fmt.Print("[?/?] Would you like to delete your configuration file? [y/n] ")
+
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	input = strings.TrimSpace(input)
+
+	if input == "" || input == "y" || input == "yes" {
+		if err := os.RemoveAll(configPath); err != nil {
+			fmt.Println("Error removing config directory:", err)
+			return
+		}
+		return
+	} else {
+		fmt.Printf("[0/1] exiting\n")
+		return
+	}
 }
