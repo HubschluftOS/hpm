@@ -9,15 +9,6 @@ import (
 	"time"
 )
 
-const ContinueMSG = `
-Packages:		%s
-Version:		%s
-Maintainer:		%s
-Dependencies:		%s
-Source:			%s
-
-Continue? [Y/n] `
-
 var (
 	Input        string
 	PackageInput string

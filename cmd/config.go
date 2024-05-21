@@ -7,22 +7,8 @@ import (
 	"strings"
 )
 
-// config file example
-const configJsonFileExample = `{
-    "root_user": "mynickname",
-    "installation_path": "/usr/bin/"
-}
-`
-
 // config path
 const configPath = "/etc/hpm/"
-
-// colors
-const (
-	reset = "\033[0m"
-	bold  = "\033[1m"
-	red   = "\033[31m"
-)
 
 func ConfigurateManager() {
 	configPath := "/etc/hpm/"

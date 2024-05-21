@@ -18,18 +18,14 @@ func Test() {
 		return
 	}
 
-	// Trim the input to remove leading and trailing whitespace (including the newline)
 	input = strings.TrimSpace(input)
 
 	if input == "" {
 		fmt.Println("You pressed Enter. Continuing program...")
-		// Add logic for Enter key action
 	} else if input == "y" {
 		fmt.Println("You entered 'y'. Proceeding with Yes.")
-		// Add logic for 'y' action
 	} else if input == "n" {
 		fmt.Println("You entered 'n'. Proceeding with No.")
-		// Add logic for 'n' action
 	} else {
 		fmt.Println("Invalid input. Please enter 'y', 'n', or press Enter.")
 	}

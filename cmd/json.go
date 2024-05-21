@@ -12,7 +12,7 @@ import (
 
 func GetPackageInformation(pkg string) {
 	var packageData map[string]interface{}
-	pkgURL := "https://hubschluft.github.io/db/" + strings.TrimSpace(pkg) + ".json"
+	pkgURL := db + strings.TrimSpace(string(pkg)) + ".json"
 
 	fmt.Printf("[1/1] connecting to a given URL\n")
 	client := &http.Client{}

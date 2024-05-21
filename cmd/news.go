@@ -12,7 +12,7 @@ import (
 
 func News() {
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://hubschluftos.github.io/db/news.xml", nil)
+	req, err := http.NewRequest("GET", db+"news.xml", nil)
 	if err != nil {
 		log.Fatal(err)
 	}

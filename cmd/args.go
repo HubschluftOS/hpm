@@ -12,6 +12,7 @@ var (
 	newsFlag   bool
 	configFlag string
 	logsFlag   bool
+	searchFlag string
 	testFlag   bool
 )
 
@@ -20,8 +21,9 @@ func Args() {
 	flag.StringVar(&desyncFlag, "desync", "", "desync the package with your system")
 	flag.StringVar(&updateFlag, "update", "", "update the package or system")
 	flag.BoolVar(&newsFlag, "news", false, "display operating system news")
-	flag.StringVar(&configFlag, "config", "", "configure package manager")
+	flag.StringVar(&configFlag, "config", "", "configure the package manager")
 	flag.BoolVar(&logsFlag, "logs", false, "logs")
+	flag.StringVar(&searchFlag, "search", "", "search")
 	flag.BoolVar(&testFlag, "test", false, "run tests")
 	flag.Parse()
 
@@ -61,6 +63,11 @@ func Args() {
 
 	if logsFlag {
 		Logs()
+		return
+	}
+
+	if searchFlag != "" {
+		Search(searchFlag)
 		return
 	}
 
