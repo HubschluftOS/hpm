@@ -19,59 +19,62 @@ func GetPackageInformation(pkg string) {
 	if err != nil {
 		fmt.Printf("[0/1] error while connecting to a given URL: %s\n", err)
 		return
-	}
-	fmt.Printf("[1/1] creating a URL request\n")
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Printf("[0/1] error while creating a URL request: %s\n", err)
-		return
-	}
-	defer resp.Body.Close()
+	} else {
+		fmt.Printf("[1/1] creating a URL request\n")
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Printf("[0/1] error while creating a URL request: %s\n", err)
+			return
+		}
+		defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("[0/1] bad status: %s\n", resp.Status)
-		return
-	}
+		if resp.StatusCode != http.StatusOK {
+			fmt.Printf("[0/1] bad status: %s\n", resp.Status)
+			return
+		} else {
+			bodyText, err := io.ReadAll(resp.Body)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Printf("\n%s\n\n", string(bodyText))
 
-	bodyText, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(string(bodyText))
+			err = json.Unmarshal(bodyText, &packageData)
+			if err != nil {
+				fmt.Printf("[0/1] error while unmarshaling a JSON file: %s\n", err)
+				return
+			} else {
+				version, ok := packageData["version"].(string)
+				if !ok {
+					fmt.Printf("[0/1] error while parsing JSON file (version)\n")
+					return
+				}
 
-	err = json.Unmarshal(bodyText, &packageData)
-	if err != nil {
-		fmt.Printf("[0/1] error while unmarshaling a JSON file: %s\n", err)
-		return
-	}
+				maintainer, ok := packageData["maintainer"].(string)
+				if !ok {
+					fmt.Printf("[0/1] error while parsing JSON file (maintainer)\n")
+					return
+				}
 
-	version, ok := packageData["version"].(string)
-	if !ok {
-		fmt.Printf("[0/1] error while parsing JSON file (version)\n")
-		return
-	}
+				dependencies, ok := packageData["dependencies"].([]interface{})
+				if !ok {
+					fmt.Printf("[0/1] Error while parsing JSON file (dependencies)\n")
+					return
+				}
 
-	maintainer, ok := packageData["maintainer"].(string)
-	if !ok {
-		fmt.Printf("[0/1] error while parsing JSON file (maintainer)\n")
-	}
+				source, ok := packageData["source"].(string)
+				if !ok {
+					fmt.Printf("[0/1] error while parsing JSON file (source)\n")
+					return
+				}
 
-	dependencies, ok := packageData["dependencies"].([]interface{})
-	if !ok {
-		fmt.Printf("[0/1] Error while parsing JSON file (dependencies)\n")
-		return
-	}
+				path, ok := packageData["path"].(string)
+				if !ok {
+					fmt.Printf("[0/1] error while parsing JSON file (source)\n")
+					return
+				}
 
-	source, ok := packageData["source"].(string)
-	if !ok {
-		fmt.Printf("[0/1] error while parsing JSON file (source)\n")
+				Sync(pkg, version, maintainer, dependencies, source, path)
+			}
+		}
 	}
-
-	path, ok := packageData["path"].(string)
-	if !ok {
-		fmt.Printf("[0/1] error while parsing JSON file (source)\n")
-	}
-	fmt.Println(source)
-
-	Sync(pkg, version, maintainer, dependencies, source, path)
 }
