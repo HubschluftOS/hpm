@@ -7,37 +7,32 @@ import (
 	"strings"
 )
 
-// config path
-const configPath = "/etc/hpm/"
-
 func ConfigurateManager() {
-	configPath := "/etc/hpm/"
-	fmt.Printf("[1/1] Checking the configuration directory\n")
+	fmt.Printf("[1/1] checking the configuration directory\n")
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		fmt.Printf("[1/1] %s directory does not exist\n", configPath)
 		createDir()
 		createFile()
+	} else {
+		fmt.Printf("[1/1] Everything is okay\n")
+		return
 	}
-
-	fmt.Printf("[1/1] Everything is okay\n")
-	return
 }
 
 func createDir() {
-	fmt.Printf("[1/1] Directory does not exist, creating...\n")
-
+	fmt.Printf("[1/1] directory does not exist, creating...\n")
 	if err := os.Mkdir(configPath, 0755); err != nil {
 		fmt.Printf("[0/1] %s\n", err)
 		return
+	} else {
+		fmt.Printf("[1/1] Directory successfully created\n")
+		return
 	}
-
-	fmt.Printf("[1/1] Directory successfully created\n")
-	return
 }
 
 func createFile() {
-	fmt.Printf("[1/1] Configuration file does not exist, creating...\n")
+	fmt.Printf("[1/1] configuration file does not exist, creating...\n")
 	createConfigFile, err := os.Create(configPath + "config.json")
 	if err != nil {
 		fmt.Printf("[0/1] %s\n", err)
@@ -47,13 +42,13 @@ func createFile() {
 
 	_, err = createConfigFile.WriteString(configJsonFileExample)
 	if err != nil {
-		fmt.Printf("[0/1] Error writing data to the file\n")
+		fmt.Printf("[0/1] error writing data to the file\n")
+		return
+	} else {
+		fmt.Printf("[1/1] configuration file successfully created\n")
+		fmt.Printf("[1/1] config directory successfully configured\n")
 		return
 	}
-
-	fmt.Printf("[1/1] Configuration file successfully created\n")
-	fmt.Printf("[1/1] Config directory successfully configured\n")
-	return
 }
 
 func reloadConfig() {
@@ -64,23 +59,24 @@ func reloadConfig() {
 
 	input, err := reader.ReadString('\n')
 	if err != nil {
-		fmt.Println("Error reading input:", err)
-		return
-	}
-
-	input = strings.TrimSpace(input)
-
-	if input == "" || input == "y" || input == "yes" {
-		if err := os.RemoveAll(configPath); err != nil {
-			fmt.Println("Error removing config directory:", err)
-			return
-		}
-		createDir()
-		createFile()
+		fmt.Printf("[0/1] error reading input: %s\n", err)
 		return
 	} else {
-		fmt.Printf("[0/1] exiting\n")
-		return
+		input = strings.TrimSpace(input)
+
+		if input == "" || input == "y" || input == "yes" {
+			if err := os.RemoveAll(configPath); err != nil {
+				fmt.Printf("[0/1] error removing config directory: %s\n", err)
+				return
+			} else {
+				createDir()
+				createFile()
+				return
+			}
+		} else {
+			fmt.Printf("[0/1] exiting\n")
+			return
+		}
 	}
 }
 
@@ -94,18 +90,19 @@ func removeConfig() {
 	if err != nil {
 		fmt.Println("Error reading input:", err)
 		return
-	}
+	} else {
+		input = strings.TrimSpace(input)
 
-	input = strings.TrimSpace(input)
-
-	if input == "" || input == "y" || input == "yes" {
-		if err := os.RemoveAll(configPath); err != nil {
-			fmt.Println("Error removing config directory:", err)
+		if input == "" || input == "y" || input == "yes" {
+			if err := os.RemoveAll(configPath); err != nil {
+				fmt.Printf("[0/1] error removing config directory: %s\n", err)
+				return
+			} else {
+				return
+			}
+		} else {
+			fmt.Printf("[0/1] exiting\n")
 			return
 		}
-		return
-	} else {
-		fmt.Printf("[0/1] exiting\n")
-		return
 	}
 }

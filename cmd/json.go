@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -21,7 +20,6 @@ func GetPackageInformation(pkg string) {
 		fmt.Printf("[0/1] error while connecting to a given URL: %s\n", err)
 		return
 	}
-
 	fmt.Printf("[1/1] creating a URL request\n")
 	resp, err := client.Do(req)
 	if err != nil {
@@ -29,6 +27,11 @@ func GetPackageInformation(pkg string) {
 		return
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("[0/1] bad status: %s\n", resp.Status)
+		return
+	}
 
 	bodyText, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -70,19 +73,5 @@ func GetPackageInformation(pkg string) {
 	}
 	fmt.Println(source)
 
-	configPath := "/home/rendick" + "/.config/hpm/" + pkg + ".json"
-	fmt.Println(configPath)
-
-	packageJsonInformation, err := os.Create(configPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(packageJsonInformation)
-
-	if err := os.WriteFile(configPath, []byte(bodyText), 0755); err != nil {
-		fmt.Println(err)
-	}
-
 	Sync(pkg, version, maintainer, dependencies, source, path)
-	return
 }

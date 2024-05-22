@@ -1,7 +1,10 @@
 package cmd
 
 // main db
-const db = "https://hubschluft.github.io/db/"
+const (
+	db         = "https://hubschluft.github.io/db/"
+	configPath = "/etc/hpm/"
+)
 
 // package information. sync.go
 const ContinueMSG = `
@@ -9,6 +12,7 @@ Packages:		%s
 Version:		%s
 Maintainer:		%s
 Dependencies:		%s
+Size:			%d MiB
 Source:			%s
 
 Continue? [Y/n] `

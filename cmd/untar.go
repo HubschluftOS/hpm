@@ -30,36 +30,35 @@ func UntarGzFile(filename string) error {
 		header, err := tarReader.Next()
 		if err == io.EOF {
 			break
-		}
-
-		if err != nil {
+		} else if err != nil {
 			return fmt.Errorf("[0/1] error reading tar header: %s", err)
-		}
+		} else {
+			targetPath := filepath.Join(".", header.Name)
 
-		targetPath := filepath.Join(".", header.Name)
+			switch header.Typeflag {
+			case tar.TypeDir:
+				if err := os.MkdirAll(targetPath, 0755); err != nil {
+					return fmt.Errorf("[0/1] failed to create directory: %s", err)
+				}
+			case tar.TypeReg:
+				if err := os.MkdirAll(filepath.Dir(targetPath), 0755); err != nil {
+					return fmt.Errorf("[0/1] failed to create parent directories: %s", err)
+				} else {
+					outFile, err := os.Create(targetPath)
+					if err != nil {
+						return fmt.Errorf("[0/1] failed to create file: %s", err)
+					}
+					defer outFile.Close()
 
-		switch header.Typeflag {
-		case tar.TypeDir:
-			if err := os.MkdirAll(targetPath, 0755); err != nil {
-				return fmt.Errorf("[0/1] failed to create directory: %s", err)
+					if _, err := io.Copy(outFile, tarReader); err != nil {
+						return fmt.Errorf("[0/1] error extracting file %s: %s", header.Name, err)
+					} else {
+						fmt.Printf("[1/1] extracted: %s\n", header.Name)
+					}
+				}
+			default:
+				fmt.Printf("[1/1] unsupported tar entry type: %d\n", header.Typeflag)
 			}
-		case tar.TypeReg:
-			if err := os.MkdirAll(filepath.Dir(targetPath), 0755); err != nil {
-				return fmt.Errorf("[0/1] failed to create parent directories: %s", err)
-			}
-
-			outFile, err := os.Create(targetPath)
-			if err != nil {
-				return fmt.Errorf("[0/1] failed to create file: %s", err)
-			}
-			defer outFile.Close()
-
-			if _, err := io.Copy(outFile, tarReader); err != nil {
-				return fmt.Errorf("[0/1] error extracting file %s: %s", header.Name, err)
-			}
-			fmt.Printf("[1/1] extracted: %s\n", header.Name)
-		default:
-			fmt.Printf("[1/1] unsupported tar entry type: %d\n", header.Typeflag)
 		}
 	}
 

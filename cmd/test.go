@@ -1,32 +1,41 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strings"
+	"io"
+	"net/http"
 )
 
 func Test() {
-	reader := bufio.NewReader(os.Stdin)
+	url := "https://github.com/dylanaraps/neofetch/archive/refs/tags/7.1.0.tar.gz"
 
-	fmt.Println("Press Enter to continue, or type 'y' or 'n' and press Enter:")
+	client := &http.Client{}
 
-	input, err := reader.ReadString('\n')
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Println("Error reading input:", err)
+		fmt.Println("Error creating request:", err)
 		return
-	}
-
-	input = strings.TrimSpace(input)
-
-	if input == "" {
-		fmt.Println("You pressed Enter. Continuing program...")
-	} else if input == "y" {
-		fmt.Println("You entered 'y'. Proceeding with Yes.")
-	} else if input == "n" {
-		fmt.Println("You entered 'n'. Proceeding with No.")
 	} else {
-		fmt.Println("Invalid input. Please enter 'y', 'n', or press Enter.")
+
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Println("Error making request:", err)
+			return
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			fmt.Printf("Failed to download file: %s\n", resp.Status)
+			return
+		} else {
+			size, err := io.Copy(io.Discard, resp.Body)
+			if err != nil {
+				fmt.Println("Error reading response body:", err)
+				return
+			} else {
+				fmt.Printf("size_download=%d\n", size)
+			}
+		}
 	}
+
 }
