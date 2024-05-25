@@ -1,8 +1,12 @@
 package cmd
 
+import "time"
+
+var currentTime = time.Now().Format("2006-01-02 15:04:05")
+
 // main db
 const (
-	db         = "https://hubschluft.github.io/db/"
+	db         = "https://hubshluft.github.io/db/"
 	configPath = "/etc/hpm/"
 )
 
@@ -15,7 +19,7 @@ Dependencies:		%s
 Size:			%d MiB
 Source:			%s
 
-Continue? [Y/n] `
+`
 
 // config file example. config.go
 const configJsonFileExample = `{

@@ -36,7 +36,7 @@ func GetPackageInformation(pkg string) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Printf("\n%s\n\n", string(bodyText))
+			fmt.Printf("\n%s\n", string(bodyText))
 
 			err = json.Unmarshal(bodyText, &packageData)
 			if err != nil {

@@ -11,7 +11,7 @@ var (
 	updateFlag string
 	newsFlag   bool
 	configFlag string
-	logsFlag   bool
+	logsFlag   string
 	searchFlag string
 	testFlag   bool
 )
@@ -22,7 +22,7 @@ func Args() {
 	flag.StringVar(&updateFlag, "update", "", "update the package or system")
 	flag.BoolVar(&newsFlag, "news", false, "display operating system news")
 	flag.StringVar(&configFlag, "config", "", "configure the package manager")
-	flag.BoolVar(&logsFlag, "logs", false, "logs")
+	flag.StringVar(&logsFlag, "logs", "", "logs")
 	flag.StringVar(&searchFlag, "search", "", "search")
 	flag.BoolVar(&testFlag, "test", false, "run tests")
 	flag.Parse()
@@ -61,8 +61,11 @@ func Args() {
 		return
 	}
 
-	if logsFlag {
-		Logs()
+	if logsFlag == "display" {
+		DisplayLogs()
+		return
+	} else if logsFlag == "delete" {
+		fmt.Println("delete")
 		return
 	}
 

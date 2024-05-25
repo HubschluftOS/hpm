@@ -49,6 +49,8 @@ func Search(packageSearch string) {
 					return
 				} else {
 					fmt.Printf(packageInfo, packageSearch, red, bold, description, reset)
+					PackageInput = fmt.Sprintf("%s%ssearch:%s %s (%s)\n", red, bold, reset, packageSearch, currentTime)
+					Logs()
 				}
 			}
 		}
