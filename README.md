@@ -1,9 +1,14 @@
-# hpm - Hubschluft Package Manager
+# Hubshluft Package Manager
 
-## Installation
+# Installation
 
-```bash
-git clone https://github.com/HubschluftOS/hpm.git
-cd hpm
-make build
-```
+**Soon.**
+
+# Dependencies
+
+**sudo, sh**
+
+# Documentation
+
+**Soon.**
+

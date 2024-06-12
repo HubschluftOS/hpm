@@ -7,19 +7,18 @@ import (
 )
 
 func main() {
-	os_slice := []string{"linux", "openbsd", "netbsd", "freebsd", "dragonfly"}
-	slice_types := false
+	os_slice := []string{"linux"}
+	os_type := false
 	for _, str := range os_slice {
 		if str == runtime.GOOS {
-			slice_types = true
+			os_type = true
 			break
 		}
 	}
 
-	if slice_types == true {
-		cmd.Args()
+	if os_type == true {
+		cmd.Cli()
 	} else {
-		fmt.Printf("You are not running UNIX-like system right now: %s\n", runtime.GOOS)
-		return
+		fmt.Printf("You are not running UNIX-like systme right now: %s %s\n", runtime.GOOS, runtime.GOARCH)
 	}
 }
