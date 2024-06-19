@@ -4,7 +4,7 @@ import (
 	"os/user"
 )
 
-func IsBool() bool {
+func IsSudo() bool {
 	currentUser, err := user.Current()
 	if err != nil {
 		Error("Unable to get current user: %s", err)

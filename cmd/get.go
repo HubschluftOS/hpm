@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"hpm/modules"
 	"io"
@@ -111,60 +112,76 @@ func ExecuteShell() {
 		return
 	} else {
 		fmt.Printf("%s\n", strings.TrimSpace(string(output)))
+		modules.Success("%s successfully installed", name)
 	}
 }
 
 func Get(pkg string) {
-	if Curl(pkg) {
-		UnmarshalPackage()
+	if modules.IsSudo() == true {
+		if _, err := os.Stat("/usr/bin/" + strings.TrimSpace(strings.ToLower(string(pkg)))); err == nil {
+			modules.Error("File exists. Abroting.")
+		} else if errors.Is(err, os.ErrNotExist) {
+			if Curl(pkg) {
+				UnmarshalPackage()
 
-		getIndex := -1
-		for i, arg := range os.Args {
-			if arg == "-get" || arg == "--get" {
-				getIndex = i
-				break
-			}
-		}
-
-		if getIndex != -1 {
-			getArgsCount := 0
-			for i := getIndex + 1; i < len(os.Args); i++ {
-				if os.Args[i][0] == '-' {
-					break
-				}
-				getArgsCount++
-			}
-
-			fmt.Printf(PackageInformation, name, getArgsCount, description, version, maintainer, installation)
-			fmt.Print(modules.Bold + "Continue? [Y/n] \n" + modules.Reset)
-			reader := bufio.NewReader(os.Stdin)
-			input, err := reader.ReadString('\n')
-			if err != nil {
-				modules.Error("Error reading input: %s", err)
-				return
-			} else {
-				input = strings.TrimSpace(strings.ToLower(string(input)))
-
-				input_slice := []string{"", "yes", "y"}
-				input_types := false
-
-				for _, str := range input_slice {
-					if str == input {
-						input_types = true
+				getIndex := -1
+				for i, arg := range os.Args {
+					if arg == "-get" || arg == "--get" {
+						getIndex = i
 						break
 					}
 				}
 
-				if input_types == true {
-					ExecuteShell()
-				} else {
-					modules.Error("Exiting.")
-					return
+				if getIndex != -1 {
+					getArgsCount := 0
+					for i := getIndex + 1; i < len(os.Args); i++ {
+						if os.Args[i][0] == '-' {
+							break
+						}
+						getArgsCount++
+					}
+
+					fmt.Printf(PackageInformation,
+						modules.Bold, modules.Reset, name, getArgsCount,
+						modules.Bold, modules.Reset, description,
+						modules.Bold, modules.Reset, version,
+						modules.Bold, modules.Reset, maintainer,
+						modules.Bold, modules.Reset, installation)
+					fmt.Print(modules.Bold + "Continue? [Y/n] \n" + modules.Reset)
+					reader := bufio.NewReader(os.Stdin)
+					input, err := reader.ReadString('\n')
+					if err != nil {
+						modules.Error("Error reading input: %s", err)
+						return
+					} else {
+						input = strings.TrimSpace(strings.ToLower(string(input)))
+
+						input_slice := []string{"", "yes", "y"}
+						input_types := false
+
+						for _, str := range input_slice {
+							if str == input {
+								input_types = true
+								break
+							}
+						}
+
+						if input_types == true {
+							ExecuteShell()
+							return
+						} else {
+							modules.Error("Exiting.")
+							return
+						}
+					}
 				}
+			} else {
+				modules.Error("Failed to fetch package information. Aborting.")
+				return
 			}
 		}
 	} else {
-		modules.Error("Failed to fetch package information. Aborting.")
+		modules.Error("Unable to get current user. Aborting.")
 		return
 	}
 }

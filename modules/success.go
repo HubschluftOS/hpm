@@ -1,7 +1,9 @@
 package modules
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func Success(success_text string) string {
-	return fmt.Sprintf("%s%s-> Done: %s%s\n", Green, Bold, success_text, Reset)
+func Success(success_text string, a ...interface{}) {
+	fmt.Printf("%s%s-> Done: %s%s\n", Green, Bold, fmt.Sprintf(success_text, a...), Reset)
 }

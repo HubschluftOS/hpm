@@ -5,10 +5,19 @@ const (
 )
 
 const PackageInformation = `
-Name: %s (%d)
-Version: %s 
-Description: %s
-Maintainer: %s
-Installation script: %s
+%sName:%s %s (%d)
+%sVersion:%s %s 
+%sDescription:%s %s
+%sMaintainer:%s %s
+%sInstallation script:%s %s
+
+`
+
+const PackageInformationUpdate = `
+%sName:%s %s
+%sVersion:%s %s 
+%sDescription:%s %s
+%sMaintainer:%s %s
+%sInstallation script:%s %s
 
 `

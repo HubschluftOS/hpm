@@ -6,14 +6,16 @@ import (
 )
 
 var (
-	GetFlag   string
-	UngetFlag string
-	NewsFlag  bool
+	GetFlag    string
+	UngetFlag  string
+	NewsFlag   bool
+	UpdateFlag string
 )
 
 func Cli() {
-	flag.StringVar(&GetFlag, "get", "", "Install the needed package on your Linux system")
-	flag.StringVar(&UngetFlag, "unget", "", "Uninstall the package on your Linux system")
+	flag.StringVar(&GetFlag, "get", "", "Install the needed package on your Linux system.")
+	flag.StringVar(&UngetFlag, "unget", "", "Uninstall the package on your Linux system.")
+	flag.StringVar(&UpdateFlag, "update", "", "Update all packages on your Linux system.")
 	flag.BoolVar(&NewsFlag, "news", false, "Display the latest news of the Hubshluft team and HubshluftOS.")
 	flag.Parse()
 
@@ -24,6 +26,14 @@ func Cli() {
 
 	if UngetFlag != "" {
 		Unget(UngetFlag)
+		return
+	}
+
+	if UpdateFlag == "@world" {
+		UpdateSystem()
+		return
+	} else if UpdateFlag != "" {
+		UpdatePackage(UpdateFlag)
 		return
 	}
 

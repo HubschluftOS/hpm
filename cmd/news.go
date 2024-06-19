@@ -59,8 +59,10 @@ func News() {
 						modules.Error("Error while parsing news item.")
 						return
 
+					} else {
+						fmt.Printf("%s\n", news)
+						return
 					}
-					fmt.Println(news)
 				}
 			}
 		}
