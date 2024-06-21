@@ -20,8 +20,8 @@ make
 get	 Install the needed package on your Linux system
 unget	 Uninstall the package on your Linux system
 update	 Update all packages on your Linux system
-news	Display the latest news of the Hubshluft team and HubshluftOS
-help	Display extra information about package manager
+news	 Display the latest news of the Hubshluft team and HubshluftOS
+help	 Display extra information about package manager
 ```
 
 ## License
