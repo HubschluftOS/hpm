@@ -123,11 +123,12 @@ func ExecuteShell(commands []string) {
 			fmt.Printf("%s\n", string(output))
 			return
 		} else {
-			fmt.Printf("Command succeeded: %s\n", command)
-			fmt.Printf("Command output: %s\n", strings.TrimSpace(string(output)))
+			fmt.Printf("%s\n", command)
+			fmt.Printf("%s\n", strings.TrimSpace(string(output)))
 		}
 	}
 	modules.Success("%s successfully installed", name)
+	return
 }
 
 func Get(pkg string) {
@@ -160,8 +161,10 @@ func Get(pkg string) {
 						modules.Bold, modules.Reset, description,
 						modules.Bold, modules.Reset, version,
 						modules.Bold, modules.Reset, maintainer,
-						modules.Bold, modules.Reset, strings.Join(installation, "  "))
+						modules.Bold, modules.Reset, strings.Join(installation, modules.Bold+" - "+modules.Reset),
+						modules.Bold, modules.Reset, strings.Join(uninstallation, modules.Bold+" - "+modules.Reset))
 					fmt.Print(modules.Bold + "Continue? [Y/n] " + modules.Reset)
+
 					reader := bufio.NewReader(os.Stdin)
 					input, err := reader.ReadString('\n')
 					if err != nil {

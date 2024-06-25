@@ -10,6 +10,7 @@ const PackageInformation = `
 %sDescription:%s %s
 %sMaintainer:%s %s
 %sInstallation script:%s %s
+%sUninstallation script: %s %s
 
 `
 
@@ -19,5 +20,6 @@ const PackageInformationUpdate = `
 %sDescription:%s %s
 %sMaintainer:%s %s
 %sInstallation script:%s %s
+%sUninstallation script: %s %s
 
 `

@@ -49,8 +49,9 @@ func UpdatePackage(pkg string) {
 					modules.Bold, modules.Reset, description,
 					modules.Bold, modules.Reset, version,
 					modules.Bold, modules.Reset, maintainer,
-					modules.Bold, modules.Reset, installation)
-				fmt.Print(modules.Bold + "Continue? [Y/n] \n" + modules.Reset)
+					modules.Bold, modules.Reset, strings.Join(installation, modules.Bold+" - "+modules.Reset),
+					modules.Bold, modules.Reset, strings.Join(uninstallation, modules.Bold+" - "+modules.Reset))
+				fmt.Print(modules.Bold + "Continue? [Y/n] " + modules.Reset)
 
 				reader := bufio.NewReader(os.Stdin)
 				input, err := reader.ReadString('\n')
