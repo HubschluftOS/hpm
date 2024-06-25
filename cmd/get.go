@@ -16,12 +16,13 @@ import (
 var (
 	PackageJsonOutput []byte
 
-	PackageData  map[string]interface{}
-	name         string
-	description  string
-	version      string
-	maintainer   string
-	installation string
+	PackageData    map[string]interface{}
+	name           string
+	description    string
+	version        string
+	maintainer     string
+	installation   []string
+	uninstallation []string
 
 	err error
 	ok  bool
@@ -30,7 +31,8 @@ var (
 func Curl(pkg string) bool {
 	modules.Info("Getting the URL.")
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", Repository+pkg+"-HLPKG.json", nil)
+	repo := Repository + pkg + ".json"
+	req, err := http.NewRequest("GET", repo, nil)
 	if err != nil {
 		modules.Error("Error while connecting to a given URL: %s", err)
 		return false
@@ -45,7 +47,7 @@ func Curl(pkg string) bool {
 
 		modules.Info("Checking the status code.")
 		if resp.StatusCode != http.StatusOK {
-			modules.Error("Bad status code: %s", resp.Status)
+			modules.Error("Bad status code: %s not found", pkg)
 			return false
 		}
 
@@ -91,35 +93,47 @@ func UnmarshalPackage() {
 			return
 		}
 
-		installation, ok = PackageData["installation"].(string)
+		installationInterface, ok := PackageData["installation"].([]interface{})
 		if !ok {
 			modules.Error("Error while parsing JSON file.")
 			return
 		}
+		for _, cmd := range installationInterface {
+			installation = append(installation, cmd.(string))
+		}
+
+		uninstallationInterface, ok := PackageData["uninstallation"].([]interface{})
+		if !ok {
+			modules.Error("Error while parsing JSON file.")
+			return
+		}
+		for _, cmd := range uninstallationInterface {
+			uninstallation = append(uninstallation, cmd.(string))
+		}
 	}
 }
 
-func ExecuteShell() {
-	if len(installation) == 0 {
-		modules.Error("No command to execute.")
-		return
+func ExecuteShell(commands []string) {
+	for _, command := range commands {
+		cmd := exec.Command("sh", "-c", command)
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			modules.Error("Error while executing the command: %s", err)
+			fmt.Printf("%s\n", command)
+			fmt.Printf("%s\n", string(output))
+			return
+		} else {
+			fmt.Printf("Command succeeded: %s\n", command)
+			fmt.Printf("Command output: %s\n", strings.TrimSpace(string(output)))
+		}
 	}
-
-	cmd := exec.Command("sudo", "sh", "-c", installation)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		modules.Error("Error while executing the command: %s", err)
-		return
-	} else {
-		fmt.Printf("%s\n", strings.TrimSpace(string(output)))
-		modules.Success("%s successfully installed", name)
-	}
+	modules.Success("%s successfully installed", name)
 }
 
 func Get(pkg string) {
 	if modules.IsSudo() == true {
-		if _, err := os.Stat("/usr/bin/" + strings.TrimSpace(strings.ToLower(string(pkg)))); err == nil {
-			modules.Error("File exists. Abroting.")
+		if _, err := os.Stat("/hl-bin/" + strings.TrimSpace(strings.ToLower(string(pkg)))); err == nil {
+			modules.Error("File exists. Aborting.")
 		} else if errors.Is(err, os.ErrNotExist) {
 			if Curl(pkg) {
 				UnmarshalPackage()
@@ -146,8 +160,8 @@ func Get(pkg string) {
 						modules.Bold, modules.Reset, description,
 						modules.Bold, modules.Reset, version,
 						modules.Bold, modules.Reset, maintainer,
-						modules.Bold, modules.Reset, installation)
-					fmt.Print(modules.Bold + "Continue? [Y/n] \n" + modules.Reset)
+						modules.Bold, modules.Reset, strings.Join(installation, "  "))
+					fmt.Print(modules.Bold + "Continue? [Y/n] " + modules.Reset)
 					reader := bufio.NewReader(os.Stdin)
 					input, err := reader.ReadString('\n')
 					if err != nil {
@@ -167,7 +181,7 @@ func Get(pkg string) {
 						}
 
 						if input_types == true {
-							ExecuteShell()
+							ExecuteShell(installation)
 							return
 						} else {
 							modules.Error("Exiting.")

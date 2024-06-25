@@ -4,12 +4,38 @@ import (
 	"bufio"
 	"fmt"
 	"hpm/modules"
+	"net/http"
 	"os"
 	"strings"
 )
 
 func UpdateSystem() {
-	fmt.Printf("update system\n")
+	readFolder, err := os.ReadDir("/hl-bin/")
+	if err != nil {
+		fmt.Println("Error reading directory:", err)
+		return
+	}
+
+	for _, file := range readFolder {
+		if file.IsDir() {
+			continue
+		}
+
+		url := Repository + file.Name() + ".json"
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Printf("Error fetching %s: %v\n", url, err)
+			continue
+		}
+
+		if resp.StatusCode != http.StatusOK {
+			fmt.Printf("Non-OK HTTP status for %s: %s\n", url, resp.Status)
+			resp.Body.Close()
+			continue
+		}
+
+		UpdatePackage(file.Name())
+	}
 }
 
 func UpdatePackage(pkg string) {
@@ -45,7 +71,7 @@ func UpdatePackage(pkg string) {
 					}
 
 					if input_types == true {
-						ExecuteShell()
+						ExecuteShell(installation)
 					} else {
 						modules.Error("Exiting.")
 						return

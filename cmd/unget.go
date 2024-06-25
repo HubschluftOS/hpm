@@ -8,8 +8,8 @@ import (
 )
 
 func CheckIfFileExist(pkg string) bool {
-	if _, err := os.Stat("/usr/bin/" + strings.TrimSpace(strings.ToLower(string(pkg)))); err == nil {
-		if RemovePackage := os.Remove("/usr/bin/" + strings.TrimSpace(strings.ToLower(string(pkg)))); RemovePackage != nil {
+	if _, err := os.Stat("/hl-bin/" + strings.TrimSpace(strings.ToLower(string(pkg)))); err == nil {
+		if RemovePackage := os.Remove("/hl-bin/" + strings.TrimSpace(strings.ToLower(string(pkg)))); RemovePackage != nil {
 			modules.Error("Error while removing %s", pkg)
 			return false
 		} else {

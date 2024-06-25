@@ -1,7 +1,7 @@
 package cmd
 
 const (
-	Repository = "https://hubshluft.github.io/db/"
+	Repository = "https://raw.githubusercontent.com/hubshluft/HUR/main/extra/"
 )
 
 const PackageInformation = `

@@ -10,6 +10,7 @@ var (
 	UngetFlag  string
 	NewsFlag   bool
 	UpdateFlag string
+	FindFlag   string
 	HelpFlag   bool
 )
 
@@ -18,6 +19,7 @@ func Cli() {
 	flag.StringVar(&GetFlag, "get", "", "Install the needed package on your Linux system.")
 	flag.StringVar(&UngetFlag, "unget", "", "Uninstall the package on your Linux system.")
 	flag.StringVar(&UpdateFlag, "update", "", "Update all packages on your Linux system.")
+	flag.StringVar(&FindFlag, "find", "", "Find a specific package in the repository.")
 	flag.BoolVar(&NewsFlag, "news", false, "Display the latest news of the Hubshluft team and HubshluftOS.")
 	flag.Parse()
 
@@ -27,7 +29,7 @@ func Cli() {
 			"get\t Install the needed package on your Linux system\n" +
 			"unget\t Uninstall the package on your Linux system\n" +
 			"update\t Update all packages on your Linux system\n" +
-			"news\tDisplay the latest news of the Hubshluft team and HubshluftOS\n" +
+			"news\tDisplay the latest news of the Hubshluft team and Hubshluft Linux\n" +
 			"help\tDisplay extra information about package manager\n\n" +
 			"Full documentation <https://github.com/hubshluft/hpm>\n" +
 			"Source code <https://github.com/hubshluft/hpm>\n")
@@ -49,6 +51,11 @@ func Cli() {
 		return
 	} else if UpdateFlag != "" {
 		UpdatePackage(UpdateFlag)
+		return
+	}
+
+	if FindFlag != "" {
+		Find(FindFlag)
 		return
 	}
 
