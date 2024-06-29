@@ -121,7 +121,6 @@ func ExecuteShell(commands []string) {
 			modules.Error("Error while executing the command: %s", err)
 			fmt.Printf("%s\n", command)
 			fmt.Printf("%s\n", string(output))
-			return
 		} else {
 			fmt.Printf("%s\n", command)
 			fmt.Printf("%s\n", strings.TrimSpace(string(output)))
