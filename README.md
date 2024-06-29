@@ -4,7 +4,7 @@ Lightweight and powerful package manager for Hubshluft and other GNU/Linux distr
 
 ## Installation
 
-Use `make` to build `hpm`.
+Use `make` to build `hpm`. [go, make]
 
 ```bash
 git clone https://github.com/hubshluft/hpm
@@ -12,9 +12,16 @@ cd hpm
 make
 ```
 
+Download the latest release.
+
+```bash
+curl -LO https://github.com/hubshluft/hpm/releases/download/v1.0.0/hpm-1.0.0.tar.gz
+tar xzf hpm-*.tar.gz
+```
+
 ## Dependencies
 
-`sudo, make, sh`
+`sudo, sh`
 
 ## Usage
 
